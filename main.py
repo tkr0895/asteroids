@@ -1,7 +1,7 @@
 import pygame 
 from constants import *
 from player import *
-from asteroids import *
+from asteroid import *
 
 black = (0, 0, 0)
 
