@@ -20,7 +20,7 @@ def game_loop(screen, clock, dt, updateables, drawables):
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
-        screen.fill(black)
+        screen.fill(BLACK)
         updateables.update(dt)
         for drawable in drawables:
             drawable.draw(screen)
