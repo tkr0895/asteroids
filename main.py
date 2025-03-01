@@ -6,6 +6,7 @@ from asteroidfield import *
 from shot import *
 
 black = (0, 0, 0)
+score = 0
 
 def startup_print():
     print("Starting Asteroids!")
@@ -18,20 +19,27 @@ def set_variables_for_game_loop():
     dt = 0
     return screen, clock, dt
 
-def check_for_collisions_single(asteroids, other):
+def player_hit_asteroid(asteroids, other):
     for asteroid in asteroids:
             collision = asteroid.check_collision(other)
             if collision:
-                print("Game over!")
-                exit()
+                return True
 
-def check_for_collisions_group(asteroids, others):
-     for asteroid in asteroids:
-          for other in others:
+def bullet_hit_asteroid(asteroids, others):
+    for asteroid in asteroids:
+        for other in others:
             collision = asteroid.check_collision(other)
             if collision:
-                asteroid.split()
-                other.kill()
+                handle_asteroid_hit(asteroid, other)
+
+def add_score():
+    global score
+    score = score + 10 
+
+def handle_asteroid_hit(asteroid, other):
+    asteroid.split()
+    other.kill()
+    add_score()
 
 def game_loop(screen, clock, dt, updateables, drawables, asteroids, player, shots):
     while True:
@@ -40,8 +48,10 @@ def game_loop(screen, clock, dt, updateables, drawables, asteroids, player, shot
                     return
         screen.fill(BLACK)
         updateables.update(dt)
-        check_for_collisions_single(asteroids, player)
-        check_for_collisions_group(asteroids, shots)
+        if player_hit_asteroid(asteroids, player):
+            end_print()
+            exit()
+        bullet_hit_asteroid(asteroids, shots)
         for drawable in drawables:
             drawable.draw(screen)
         pygame.display.flip()
@@ -60,7 +70,12 @@ def add_containers(updatables, drawables, asteroids, shots):
     AsteroidField.containers = (updatables,)
     Shot.containers = (updatables, drawables, shots)
 
-def main():
+def end_print():
+    global score
+    print(f"Game over!")
+    print(f"You reached {score} points")
+
+def init_game():
     pygame.init()
     startup_print()
     screen, clock, dt = set_variables_for_game_loop()
@@ -68,6 +83,10 @@ def main():
     add_containers(updatables, drawables, asteroids, shots)
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     asteroid_field = AsteroidField()
+    return screen, clock, dt, updatables, drawables, asteroids, shots, player,
+
+def main():
+    screen, clock, dt, updatables, drawables, asteroids, shots, player = init_game()
     game_loop(screen, clock, dt, updatables, drawables, asteroids, player, shots)
 
 if __name__ == "__main__":
