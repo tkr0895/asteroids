@@ -17,6 +17,13 @@ def set_variables_for_game_loop():
     dt = 0
     return screen, clock, dt
 
+def check_for_collisions(asteroids, player):
+    for asteroid in asteroids:
+            collision = asteroid.check_collision(player)
+            if collision:
+                print("Game over!")
+                exit()
+
 def game_loop(screen, clock, dt, updateables, drawables, asteroids, player):
     while True:
         for event in pygame.event.get():
@@ -24,11 +31,7 @@ def game_loop(screen, clock, dt, updateables, drawables, asteroids, player):
                     return
         screen.fill(BLACK)
         updateables.update(dt)
-        for asteroid in asteroids:
-            collision = asteroid.check_collision(player)
-            if collision:
-                print("Game over!")
-                exit()
+        check_for_collisions(asteroids, player)
         for drawable in drawables:
             drawable.draw(screen)
         pygame.display.flip()
