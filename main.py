@@ -30,8 +30,7 @@ def check_for_collisions_group(asteroids, others):
           for other in others:
             collision = asteroid.check_collision(other)
             if collision:
-                print("Collision")
-                asteroid.kill()
+                asteroid.split()
                 other.kill()
 
 def game_loop(screen, clock, dt, updateables, drawables, asteroids, player, shots):
