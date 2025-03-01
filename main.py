@@ -13,15 +13,16 @@ def set_variables_for_game_loop():
     dt = 0
     return screen, clock, dt
 
-def game_loop(screen, clock, dt, player):
+def game_loop(screen, clock, dt, updateables, drawables):
     while True:
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
         black = (0, 0, 0)
         screen.fill(black)
-        player.update(dt)
-        player.draw(screen)
+        updateables.update(dt)
+        for drawable in drawables:
+            drawable.draw(screen)
         pygame.display.flip()
         dt = clock.tick(60) / 1000
 
@@ -29,8 +30,11 @@ def main():
     pygame.init()
     startup_print()
     screen, clock, dt = set_variables_for_game_loop()
+    updatables = pygame.sprite.Group()
+    drawables = pygame.sprite.Group()
+    Player.containers = (updatables, drawables)
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-    game_loop(screen, clock, dt, player)
+    game_loop(screen, clock, dt, updatables, drawables)
 
 if __name__ == "__main__":
     main()
