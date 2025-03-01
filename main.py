@@ -13,10 +13,11 @@ def init_game():
     startup_print()
     screen, clock, dt = set_variables_for_game_loop()
     updatables, drawables, asteroids, shots = add_groups()
+    font = pygame.font.SysFont(None, 36)
     add_containers(updatables, drawables, asteroids, shots)
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     asteroid_field = AsteroidField()
-    return screen, clock, dt, updatables, drawables, asteroids, shots, player
+    return screen, clock, dt, updatables, drawables, asteroids, shots, player, font
 
 def startup_print():
     print("Starting Asteroids!")
@@ -42,12 +43,13 @@ def add_containers(updatables, drawables, asteroids, shots):
     AsteroidField.containers = (updatables,)
     Shot.containers = (updatables, drawables, shots)
 
-def game_loop(screen, clock, dt, updateables, drawables, asteroids, player, shots):
+def game_loop(screen, clock, dt, updateables, drawables, asteroids, player, shots, font):
     while True:
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
         screen.fill(BLACK)
+        
         updateables.update(dt)
         player_hit = check_collisions(asteroids, player, shots)
         if player_hit:
@@ -56,6 +58,9 @@ def game_loop(screen, clock, dt, updateables, drawables, asteroids, player, shot
         
         for drawable in drawables:
             drawable.draw(screen)
+
+        render_score(screen, font)
+
         pygame.display.flip()
         dt = clock.tick(60) / 1000
 
@@ -76,23 +81,27 @@ def check_bullet_hit_asteroid(asteroids, others):
             if collision:
                 handle_asteroid_hit(asteroid, other)
 
-def add_score():
-    global score
-    score = score + 10 
-
 def handle_asteroid_hit(asteroid, other):
     asteroid.split()
     other.kill()
     add_score()
+
+def add_score():
+    global score
+    score = score + 10 
 
 def end_print():
     global score
     print(f"Game over!")
     print(f"You reached {score} points")
 
+def render_score(screen, font):
+    score_text = font.render(f"Score: {score}", True, (255, 255, 255))
+    screen.blit(score_text, (10, SCREEN_HEIGHT - 30))
+
 def main():
-    screen, clock, dt, updatables, drawables, asteroids, shots, player = init_game()
-    game_loop(screen, clock, dt, updatables, drawables, asteroids, player, shots)
+    screen, clock, dt, updatables, drawables, asteroids, shots, player, font = init_game()
+    game_loop(screen, clock, dt, updatables, drawables, asteroids, player, shots, font)
 
 if __name__ == "__main__":
     main()
