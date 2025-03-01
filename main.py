@@ -3,6 +3,7 @@ from constants import *
 from player import *
 from asteroid import *
 from asteroidfield import *
+from shot import *
 
 black = (0, 0, 0)
 
@@ -41,18 +42,20 @@ def add_groups():
     updatables = pygame.sprite.Group()
     drawables = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
-    return updatables, drawables, asteroids
+    shots = pygame.sprite.Group()
+    return updatables, drawables, asteroids, shots
 
 def add_containers(updatables, drawables, asteroids):
     Player.containers = (updatables, drawables)
     Asteroid.containers = (asteroids, updatables, drawables)
     AsteroidField.containers = (updatables,)
+    Shot.containers = (updatables, drawables)
 
 def main():
     pygame.init()
     startup_print()
     screen, clock, dt = set_variables_for_game_loop()
-    updatables, drawables, asteroids = add_groups()
+    updatables, drawables, asteroids, shots = add_groups()
     add_containers(updatables, drawables, asteroids)
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     asteroid_field = AsteroidField()
