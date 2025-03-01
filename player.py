@@ -2,6 +2,8 @@ import pygame
 from constants import *
 from circleshape import *
 
+white = (255, 255, 255)
+
 class Player(CircleShape):
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
@@ -17,7 +19,6 @@ class Player(CircleShape):
     
     def draw(self, screen):
         points = self.triangle()
-        white = (255, 255, 255)
         pygame.draw.polygon(screen, white, points, 2)
 
     def rotate(self, dt):

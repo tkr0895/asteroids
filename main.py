@@ -2,6 +2,8 @@ import pygame
 from constants import *
 from player import *
 
+black = (0, 0, 0)
+
 def startup_print():
     print("Starting Asteroids!")
     print(f"Screen width: {SCREEN_WIDTH}")
@@ -18,7 +20,6 @@ def game_loop(screen, clock, dt, updateables, drawables):
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
-        black = (0, 0, 0)
         screen.fill(black)
         updateables.update(dt)
         for drawable in drawables:
@@ -26,14 +27,18 @@ def game_loop(screen, clock, dt, updateables, drawables):
         pygame.display.flip()
         dt = clock.tick(60) / 1000
 
-def main():
-    pygame.init()
-    startup_print()
-    screen, clock, dt = set_variables_for_game_loop()
+def add_groups_for_Player():
     updatables = pygame.sprite.Group()
     drawables = pygame.sprite.Group()
     Player.containers = (updatables, drawables)
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    return updatables, drawables
+
+def main():
+    pygame.init()
+    startup_print()
+    screen, clock, dt = set_variables_for_game_loop()
+    updatables, drawables = add_groups_for_Player()
     game_loop(screen, clock, dt, updatables, drawables)
 
 if __name__ == "__main__":
